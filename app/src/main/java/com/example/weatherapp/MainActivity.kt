@@ -148,13 +148,13 @@ class MainActivity : AppCompatActivity() {
 
                     binding.tvSunrise.text =
                         SimpleDateFormat(
-                            "hh:mm a",
+                            "HH:mm",
                             Locale.ENGLISH
                         ).format(Date(data.sys.sunrise.toLong() * 1000))
 
                     binding.tvSunset.text =
                         SimpleDateFormat(
-                            "hh:mm a",
+                            "HH:mm",
                             Locale.ENGLISH
                         ).format(Date(data.sys.sunset.toLong() * 1000))
 
@@ -164,13 +164,13 @@ class MainActivity : AppCompatActivity() {
                         tvLocation.text = "${data.name}\n${data.sys.country}"
                         tvTemp.text = "${data.main.temp.toInt()} °C"
                         tvFeelsLike.text = "Feels like: ${data.main.feels_like.toInt()} °C"
-                        tvMinTemp.text = "Min temp: ${data.main.temp_min} °C"
-                        tvMaxTemp.text = "Max temp: ${data.main.temp_max} °C"
+                        tvMinTemp.text = "Min: ${data.main.temp_min.toInt()} °C"
+                        tvMaxTemp.text = "Max: ${data.main.temp_max.toInt()} °C"
                         tvHumidity.text = "${data.main.humidity} %"
                         tvPressure.text = "${data.main.pressure} hPa"
                         tvUpdateTime.text = "Updated at: ${
                             SimpleDateFormat(
-                                "hh:mm a",
+                                "HH:mm",
                                 Locale.ENGLISH
                             ).format(Date(data.dt.toLong() * 1000))
                         }"
