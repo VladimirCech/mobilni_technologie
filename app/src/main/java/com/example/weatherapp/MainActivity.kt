@@ -1,21 +1,12 @@
 package com.example.weatherapp
 
-import android.Manifest
-import android.content.pm.PackageManager
-import android.location.Address
-import android.location.Geocoder
-import android.location.Location
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
-import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.example.weatherapp.adapter.RvAdapter
 import com.example.weatherapp.data.PollutionFragment
@@ -55,8 +46,6 @@ class MainActivity : AppCompatActivity() {
         dialog.setContentView(sheetLayoutBinding.root)
         setContentView(binding.root)
 
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 if (query != null) {
@@ -72,63 +61,14 @@ class MainActivity : AppCompatActivity() {
 
         })
 
-        fetchLocation()
         getCurrentWeather(city)
         pollutionFragment = PollutionFragment()
         binding.tvForecast.setOnClickListener {
             openDialog()
         }
 
-        binding.tvLocation.setOnClickListener {
-            fetchLocation()
-        }
-
     }
 
-    private fun fetchLocation() {
-        val task: Task<Location> = fusedLocationProviderClient.lastLocation
-
-
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 101
-            )
-            return
-        }
-
-        task.addOnSuccessListener {
-            val geocoder = android.location.Geocoder(this, Locale.getDefault())
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                geocoder.getFromLocation(
-                    it.latitude,
-                    it.longitude,
-                    1,
-                    object : Geocoder.GeocodeListener {
-                        override fun onGeocode(addreses: MutableList<Address>) {
-                            city = addreses[0].locality
-                        }
-
-                    })
-
-            } else {
-                val addresses =
-                    geocoder.getFromLocation(it.latitude, it.longitude, 1) as List<Address>
-                city = addresses[0].locality
-            }
-            getCurrentWeather(city)
-        }
-
-    }
 
     private fun openDialog() {
         getForecast(city)
